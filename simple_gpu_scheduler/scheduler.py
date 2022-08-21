@@ -74,7 +74,7 @@ def run_command_with_gpu(command, gpu):
 
     """
     myenv = os.environ.copy()
-    myenv['CUDA_VISIBLE_DEVICES'] = str(gpu)
+    myenv['CUDA_VISIBLE_DEVICES'] = str(gpu).split('-')[0]
     print(f'Processing command `{command}` on gpu {gpu}')
 
     def run_then_release_GPU(command, gpu):
