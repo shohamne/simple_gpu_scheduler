@@ -115,10 +115,17 @@ def main():
     """Read command line arguments and start reading from stdin."""
     parser = argparse.ArgumentParser()
     parser.add_argument('--gpus', nargs='+', type=str, required=True)
+    parser.add_argument('--tasks-per-gpu', type=int, required=False, default=1)
     args = parser.parse_args()
 
     # Support both comma separated and individually passed GPU ids
-    gpus = args.gpus if len(args.gpus) > 1 else args.gpus[0].split(',')
+    gpus_ = args.gpus if len(args.gpus) > 1 else args.gpus[0].split(',')
+    gpus = gpus_
+    if args.tasks_per_gpu > 1:
+        gpus = []
+        for gpu in gpus_:
+            for i in range(args.tasks_per_gpu):
+                gpus.append(f'{gpu}-{i}')
     gpu_manager = GPUManager(gpus)
     read_commands_and_run(gpu_manager)
 
